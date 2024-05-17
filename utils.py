@@ -70,10 +70,11 @@ class Player:
         
         # Bottom Collision
         rects = list(map(lambda p: p.get_bottom(), self.platforms))
-        if self.rect.collideobjects(rects):
+        if rect := self.rect.collideobjects(rects):
+            self.rect.top = rect.bottom+1
             self.jump_progress = self.jump_power
             self.jumping = True
-
+        
 
 
 class Platform:
