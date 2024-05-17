@@ -8,7 +8,7 @@ class Player:
         self.screen = rendering_screen
         self.platforms = platforms
 
-        self.speed = 4
+        self.speed = 7
         self.gravity_strength = 0.25
         
         self.jumping = False
@@ -86,15 +86,15 @@ class Player:
         right_rects = list(map(lambda p: p.get_right(), self.platforms))
 
         if rect := self.rect.collideobjects(left_rects):
-            if abs(self.rect.right - rect.left) < 5:
+            if abs(self.rect.right - rect.left) < self.speed+1:
                 self.rect.right = rect.left-1
 
         if rect := self.rect.collideobjects(right_rects):
-            if abs(self.rect.left - rect.right) < 5:
+            if abs(self.rect.left - rect.right) < self.speed+1:
                 self.rect.left = rect.right+1
 
         if rect := self.rect.collideobjects(top_rects):
-            if abs(self.rect.bottom - rect.top) < 5:
+            if abs(self.rect.bottom - rect.top) < self.speed+1:
                 self.rect.bottom = rect.top+1
 
         if rect := self.rect.collideobjects(bottom_rects):
