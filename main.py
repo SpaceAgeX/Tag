@@ -22,7 +22,33 @@ for i in range(10):
     platforms.append(platform)
 
 
-player = Player(screen, surf, platforms)
+class TagPlayer(Player):
+    def __init__(self, screen, surf, platforms, opponents: list[Player]):
+        super().__init__(screen, surf, platforms)
+        self.opponents = opponents
+        self.it = False
+    
+    @staticmethod
+    def empty():
+        return TagPlayer(None, pygame.Surface((1,1)), [], [])
+
+    def update(self):
+        super().update()
+
+        opponent_rects = list(map(lambda o: o.rect, self.opponents))
+        if self.rect.collideobjects(opponent_rects):
+            pass
+
+
+player = TagPlayer.empty()
+player2 = TagPlayer.empty()
+
+player = TagPlayer(screen, surf, platforms, [player2])
+player.controls = "wasd"
+
+player2 = TagPlayer(screen, surf, platforms, [player])
+player2.rect.topleft = (WIDTH/2, HEIGHT/2)
+player2.controls = "arrow_keys"
 
 
 while running:
@@ -33,6 +59,8 @@ while running:
     screen.fill("black")
 
     player.update()
+    player2.update()
+
     for platform in platforms:
         platform.draw()
 

@@ -1,4 +1,5 @@
 import pygame
+import math
 
 class Player:
     def __init__(self, rendering_screen, player_surf, platforms):
@@ -7,11 +8,14 @@ class Player:
         self.screen = rendering_screen
         self.platforms = platforms
 
-        self.speed = 3
+        self.speed = 4
+        self.gravity_strength = 0.25
         
         self.jumping = False
         self.jump_power = 10
         self.jump_progress = 0
+
+        self.controls = "wasd" # "arrow_keys" or "wasd"
 
 
     def draw(self):
@@ -21,10 +25,10 @@ class Player:
     def is_on_floor(self):
         rects = list(map(lambda p: p.get_top(), self.platforms)) # Rects of all Platforms in Environment
 
-        if rect := self.rect.collideobjects(rects):
-            #self.rect.bottom = rect.top+1
+        if self.rect.collideobjects(rects):
             return True
         elif self.rect.bottom >= self.screen.get_height():
+            self.rect.bottom = self.screen.get_height()
             return True
         else:
             return False
@@ -32,7 +36,7 @@ class Player:
 
     def update_jump(self):
         self.rect.move_ip(0, -self.jump_power+self.jump_progress)
-        self.jump_progress += 0.25
+        self.jump_progress += self.gravity_strength
 
         if self.is_on_floor():
             self.jumping = False
@@ -56,21 +60,46 @@ class Player:
             self.jumping = True
 
         # Jumping
-        if keys[pygame.K_SPACE] or keys[pygame.K_w]:
-            self.jumping = True
+
 
         if self.jumping:
             self.update_jump()
         
         # Player Movement
-        if keys[pygame.K_a] == True:
-            self.rect.move_ip(-self.speed, 0)
-        elif keys[pygame.K_d] == True:
-            self.rect.move_ip(self.speed, 0)
+        if self.controls == "wasd":
+            if keys[pygame.K_a] == True:
+                self.rect.move_ip(-self.speed, 0)
+            elif keys[pygame.K_d] == True:
+                self.rect.move_ip(self.speed, 0)
+            if keys[pygame.K_SPACE] or keys[pygame.K_w]:
+                self.jumping = True
+        elif self.controls == "arrow_keys":
+            if keys[pygame.K_LEFT] == True:
+                self.rect.move_ip(-self.speed, 0)
+            elif keys[pygame.K_RIGHT] == True:
+                self.rect.move_ip(self.speed, 0)
+            if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
+                self.jumping = True
         
-        # Bottom Collision
-        rects = list(map(lambda p: p.get_bottom(), self.platforms))
-        if rect := self.rect.collideobjects(rects):
+        # Platform Collision
+        top_rects = list(map(lambda p: p.get_top(), self.platforms))
+        bottom_rects = list(map(lambda p: p.get_bottom(), self.platforms))
+        left_rects = list(map(lambda p: p.get_left(), self.platforms))
+        right_rects = list(map(lambda p: p.get_right(), self.platforms))
+
+        if rect := self.rect.collideobjects(left_rects):
+            if abs(self.rect.right - rect.left) < 5:
+                self.rect.right = rect.left-1
+
+        if rect := self.rect.collideobjects(right_rects):
+            if abs(self.rect.left - rect.right) < 5:
+                self.rect.left = rect.right+1
+
+        if rect := self.rect.collideobjects(top_rects):
+            if abs(self.rect.bottom - rect.top) < 5:
+                self.rect.bottom = rect.top+1
+
+        if rect := self.rect.collideobjects(bottom_rects):
             self.rect.top = rect.bottom+1
             self.jump_progress = self.jump_power
             self.jumping = True
@@ -95,12 +124,21 @@ class Platform:
 
 
     def get_top(self):
-        top_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.w, 2)
+        top_rect = pygame.Rect(self.rect.x+2, self.rect.y, self.rect.w-4, 2)
         return top_rect
     
 
     def get_bottom(self):
-        rect = pygame.Rect(self.rect.x, self.rect.y+self.rect.h-2, self.rect.w, 2)
+        rect = pygame.Rect(self.rect.x+2, self.rect.y+self.rect.h-2, self.rect.w-4, 2)
+        return rect
+
+    def get_left(self):
+        rect = pygame.Rect(self.rect.x, self.rect.y+2, 2, self.rect.h-4)
+        return rect
+
+
+    def get_right(self):
+        rect = pygame.Rect(self.rect.x+self.rect.w-2, self.rect.y+2, 2, self.rect.h-4)
         return rect
 
 
