@@ -47,23 +47,21 @@ class Player:
         self.draw()
         keys = pygame.key.get_pressed()
         mouse_clicked = pygame.mouse.get_pressed()[0]
+    
+        if self.jumping:
+            self.update_jump()
 
         # Debugging
-        if mouse_clicked:
-            print("Jumping: ", self.jumping)
-            print("Jump Progress: ", self.jump_progress)
-            print("On Floor: ", self.is_on_floor())
+        # if mouse_clicked:
+        #     print("Jumping: ", self.jumping)
+        #     print("Jump Progress: ", self.jump_progress)
+        #     print("On Floor: ", self.is_on_floor())
 
         # Gravity
         if self.jumping == False and self.is_on_floor() == False:
             self.jump_progress = self.jump_power # Only Do the Descending Portion of the Jump
             self.jumping = True
 
-        # Jumping
-
-
-        if self.jumping:
-            self.update_jump()
         
         # Player Movement
         if self.controls == "wasd":
