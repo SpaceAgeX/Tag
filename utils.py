@@ -8,9 +8,16 @@ class Player:
         self.screen = rendering_screen
         self.platforms = platforms
 
+        # Running Variables
+        self.acceleration = 0.5
+        self.accelerating = True
+        self.running = False
         self.speed = 7
-        self.gravity_strength = 0.25
+        self.run_progress = 0
+        self.direction = 0
         
+        # Jumping Variables
+        self.gravity_strength = 0.25
         self.jumping = False
         self.jump_power = 10
         self.jump_progress = 0
@@ -43,13 +50,35 @@ class Player:
             self.jump_progress = 0
     
 
+    def update_run(self):
+        self.rect.move_ip(self.direction*self.run_progress, 0)
+
+        if self.accelerating: self.run_progress += self.acceleration
+        else: self.run_progress -= self.acceleration
+
+        if self.run_progress > self.speed:
+            self.run_progress = self.speed
+        
+        if self.run_progress < 0:
+            self.run_progress = 0
+            self.running = False
+    
+
     def update(self):
         self.draw()
         keys = pygame.key.get_pressed()
+
+        key_left = keys[pygame.K_a] if self.controls == "wasd" else keys[pygame.K_LEFT]
+        key_right = keys[pygame.K_d] if self.controls == "wasd" else keys[pygame.K_RIGHT]
+        key_up = keys[pygame.K_w] if self.controls == "wasd" else keys[pygame.K_UP]
+
         mouse_clicked = pygame.mouse.get_pressed()[0]
     
         if self.jumping:
             self.update_jump()
+        
+        if self.running:
+            self.update_run()
 
         # Debugging
         # if mouse_clicked:
@@ -64,21 +93,23 @@ class Player:
 
         
         # Player Movement
-        if self.controls == "wasd":
-            if keys[pygame.K_a] == True:
-                self.rect.move_ip(-self.speed, 0)
-            elif keys[pygame.K_d] == True:
-                self.rect.move_ip(self.speed, 0)
-            if keys[pygame.K_SPACE] or keys[pygame.K_w]:
-                self.jumping = True
-        elif self.controls == "arrow_keys":
-            if keys[pygame.K_LEFT] == True:
-                self.rect.move_ip(-self.speed, 0)
-            elif keys[pygame.K_RIGHT] == True:
-                self.rect.move_ip(self.speed, 0)
-            if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-                self.jumping = True
+        if key_left == True:
+            if self.direction == 1: self.run_progress = 0
+            self.running = True
+            self.accelerating = True
+            self.direction = -1
+            
+        elif key_right == True:
+            if self.direction == -1: self.run_progress = 0
+            self.running = True
+            self.accelerating = True
+            self.direction = 1
+        else:
+            self.accelerating = False
+        if key_up:
+            self.jumping = True
         
+
         # Platform Collision
         top_rects = list(map(lambda p: p.get_top(), self.platforms))
         bottom_rects = list(map(lambda p: p.get_bottom(), self.platforms))
@@ -109,6 +140,8 @@ class Platform:
         self.surf = surf
         self.rect = surf.get_rect()
         self.screen = screen
+
+        self.direction = 1
     
     
     @staticmethod
@@ -144,6 +177,6 @@ class Platform:
         self.screen.blit(self.surf, self.rect)
     
 
-    def update():
-        pass
+    def update(self):
+        self.rect.move_ip(self.direction, 0)
 
