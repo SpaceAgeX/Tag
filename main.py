@@ -9,19 +9,44 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
-running = True
+
 
 player1_surf = pygame.Surface((50, 50))
 player1_surf.fill("indigo")
-player2_surf = pygame.Surface((30, 50))
+player2_surf = pygame.Surface((50, 50))
 player2_surf.fill("indigo")
 
 
 platforms = []
 
-for i in range(10):
-    platform = Platform.from_rect(screen, pygame.Rect(random.randrange(0, WIDTH), random.randrange(0, HEIGHT), random.randrange(40, 100), 30), "darkgreen")
-    platforms.append(platform)
+map_data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+            [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0],
+            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+for row, i in enumerate(map_data):
+    for tile, j in enumerate(i):
+        if j == 1:
+            platform = Platform.from_rect(screen, pygame.Rect(tile*64, (row*32)+1, 64, 32), "darkgreen")
+            platforms.append(platform)
 
 
 def set_all_players(players):
@@ -76,33 +101,37 @@ class TagPlayer(Player):
             print(f"It ({self.id}): ", self.it)
         
 
+def main():
+    player1 = TagPlayer(screen, player1_surf, platforms)
+    player1.rect.topleft = ((WIDTH/2)- 128, HEIGHT/2)
+    player1.controls = "wasd"
 
-player1 = TagPlayer(screen, player1_surf, platforms)
-player1.controls = "wasd"
+    player2 = TagPlayer(screen, player2_surf, platforms)
+    player2.rect.topleft = ((WIDTH/2 + 128), HEIGHT/2)
+    player2.controls = "arrow_keys"
 
-player2 = TagPlayer(screen, player2_surf, platforms)
-player2.rect.topleft = (WIDTH/2, HEIGHT/2)
-player2.controls = "arrow_keys"
+    players = [player1, player2]
+    set_all_players(players)
 
-players = [player1, player2]
-set_all_players(players)
+    running = True
 
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        screen.fill("deepskyblue3")
 
-    screen.fill("deepskyblue3")
+        player1.update()
+        player2.update()
 
-    player1.update()
-    player2.update()
+        for platform in platforms:
+            platform.draw()
 
-    for platform in platforms:
-        platform.draw()
-
-    pygame.display.update()
-    clock.tick(60)
+        pygame.display.update()
+        clock.tick(60)
 
 
-pygame.quit()
+    pygame.quit()
+if __name__ == "__main__":
+    main()
