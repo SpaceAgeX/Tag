@@ -1,5 +1,5 @@
 import pygame
-from utils import Player, Platform
+from utils import Player, Platform, TagSybol
 import random
 
 WIDTH = 1280
@@ -13,9 +13,12 @@ clock = pygame.time.Clock()
 
 
 player1_surf = pygame.Surface((50, 50))
-player1_surf.fill("indigo")
+player1_surf.fill((162, 62, 140))
 player2_surf = pygame.Surface((50, 50))
-player2_surf.fill("indigo")
+player2_surf.fill((162, 62, 140))
+
+TagSybolImage = pygame.image.load('Assets/TagSybol.png').convert_alpha()
+
 
 tileImages = [None]
 for x in range(0, 7):
@@ -60,15 +63,16 @@ class TagPlayer(Player):
         self.it = False
         self.id = random.random()
         self.collided = False
-    
+        self.sybol = TagSybol(TagSybolImage)
+
 
     def set_it(self, value):
         if value == True:
             self.it = True
-            self.surf.fill("red")
+            
         else:
             self.it = False
-            self.surf.fill("indigo")
+           
     
 
     def set_players(self, players):
@@ -79,7 +83,8 @@ class TagPlayer(Player):
         super().update()
         mouse_clicked = pygame.mouse.get_pressed()[0]
         opponent_rects = list(map(lambda o: o.rect, self.opponents))
-
+        if self.it:
+            self.sybol.draw(screen , (self.rect.midtop[0] - (self.sybol.image.get_width()/2), self.rect.midtop[1]- 32))
         if self.rect.collideobjects(opponent_rects):
             if self.collided == False:
                 self.collided = True
@@ -115,7 +120,7 @@ def main():
     while running:    
         clock.tick(60)
 
-        screen.fill("deepskyblue3")
+        screen.fill((115,190,211))
 
         screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
 
