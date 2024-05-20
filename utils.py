@@ -1,6 +1,15 @@
 import pygame
 import math
 
+class TagSybol():
+
+    def __init__(self, image):
+        self.image = image
+
+    def draw(self, surface, pos):
+        surface.blit(self.image, pos)
+
+
 class Player:
     def __init__(self, rendering_screen, player_surf, platforms):
         self.surf = player_surf
