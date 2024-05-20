@@ -112,9 +112,21 @@ def main():
     running = True
     
    
-    while running:
-        for event in pygame.event.get():
+    while running:    
+        clock.tick(60)
 
+        screen.fill("deepskyblue3")
+
+        screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
+
+
+        player1.update()
+        player2.update()
+
+        for platform in platforms:
+            platform.draw()
+
+        for event in pygame.event.get():
             if event.type == pygame.KEYUP:
                 if event.key==pygame.K_w:
                     player1.readyJump = True
@@ -122,7 +134,6 @@ def main():
                 if event.key==pygame.K_UP:
                     player2.readyJump = True
                     player2.canJump = False
-
             if event.type == pygame.KEYDOWN:
                 if event.key==pygame.K_w and player1.readyJump:
                     player1.canJump = True
@@ -130,21 +141,11 @@ def main():
                 if event.key==pygame.K_UP and player2.readyJump:
                     player2.canJump = True
                     player2.readyJump = False
-
-
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill("deepskyblue3")
-
-        player1.update()
-        player2.update()
-        
-        for platform in platforms:
-            platform.draw()
 
         pygame.display.update()
-        clock.tick(60)
 
 
     pygame.quit()
