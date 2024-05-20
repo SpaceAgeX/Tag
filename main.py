@@ -11,6 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 
+
 player1_surf = pygame.Surface((50, 50))
 player1_surf.fill("indigo")
 player2_surf = pygame.Surface((50, 50))
@@ -42,13 +43,14 @@ for row, i in enumerate(map_data):
             platforms.append(platform)
 
 
+
 def set_all_players(players):
     for player in players:
         player.set_players(players)
     
     chosen_index = random.randrange(0, len(players))
     players[chosen_index].set_it(True)
-    print(chosen_index)
+    #print(chosen_index)
 
 
 class TagPlayer(Player):
@@ -96,6 +98,7 @@ class TagPlayer(Player):
 
 def main():
     player1 = TagPlayer(screen, player1_surf, platforms)
+
     player1.rect.topleft = ((WIDTH/2)- 128, (HEIGHT/2)-128)
     player1.controls = "wasd"
 

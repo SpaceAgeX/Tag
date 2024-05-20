@@ -143,6 +143,7 @@ class Platform:
         self.pos = (pos[0], pos[1]- 5)
         self.direction = 1
     
+
     
     
 
