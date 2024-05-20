@@ -10,8 +10,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
-
-
 player1_surf = pygame.Surface((50, 50))
 player1_surf.fill("indigo")
 player2_surf = pygame.Surface((50, 50))
@@ -127,7 +125,8 @@ def main():
         pygame.display.update()
         clock.tick(60)
 
-
     pygame.quit()
+
+
 if __name__ == "__main__":
     main()

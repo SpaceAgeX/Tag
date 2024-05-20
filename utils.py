@@ -67,12 +67,11 @@ class Player:
     def update(self):
         self.draw()
         keys = pygame.key.get_pressed()
+        mouse_clicked = pygame.mouse.get_pressed()[0]
 
         key_left = keys[pygame.K_a] if self.controls == "wasd" else keys[pygame.K_LEFT]
         key_right = keys[pygame.K_d] if self.controls == "wasd" else keys[pygame.K_RIGHT]
         key_up = keys[pygame.K_w] if self.controls == "wasd" else keys[pygame.K_UP]
-
-        mouse_clicked = pygame.mouse.get_pressed()[0]
     
         if self.jumping:
             self.update_jump()
@@ -143,10 +142,6 @@ class Platform:
         self.pos = (pos[0], pos[1]- 5)
         self.direction = 1
     
-
-    
-    
-
 
     def get_top(self):
         top_rect = pygame.Rect(self.rect.x+2, self.rect.y, self.rect.w-4, 2)
