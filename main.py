@@ -1,5 +1,5 @@
 import pygame
-from utils import Player, Platform
+from utils import Player, Platform, TagSybol
 import random
 
 WIDTH = 1280
@@ -11,12 +11,15 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 player1_surf = pygame.Surface((50, 50))
-player1_surf.fill("indigo")
+player1_surf.fill((162, 62, 140))
 player2_surf = pygame.Surface((50, 50))
-player2_surf.fill("indigo")
+player2_surf.fill((162, 62, 140))
+
+TagSybolImage = pygame.image.load('Assets/TagSybol.png').convert_alpha()
+
 
 tileImages = [None]
-for x in range(0, 6):
+for x in range(0, 7):
     tileImages.append(pygame.image.load('Assets/GrassTiles/GrassTile'+str(x+1)+'.png').convert_alpha())
 
 platforms = []
@@ -29,15 +32,15 @@ map_data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,2,3,3,3,3,4,0,0,0,0,0,0,0],
             [0,0,0,0,0,2,4,0,0,0,0,0,0,1,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
-            [0,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]]
+            [5,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [6,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]]
 
 for row, i in enumerate(map_data):
     for tile, j in enumerate(i):
         if j > 0:
-            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)+1))
+            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)-8))
             platforms.append(platform)
 
 
@@ -58,15 +61,16 @@ class TagPlayer(Player):
         self.it = False
         self.id = random.random()
         self.collided = False
-    
+        self.sybol = TagSybol(TagSybolImage)
+
 
     def set_it(self, value):
         if value == True:
             self.it = True
-            self.surf.fill("red")
+            
         else:
             self.it = False
-            self.surf.fill("indigo")
+           
     
 
     def set_players(self, players):
@@ -77,7 +81,8 @@ class TagPlayer(Player):
         super().update()
         mouse_clicked = pygame.mouse.get_pressed()[0]
         opponent_rects = list(map(lambda o: o.rect, self.opponents))
-
+        if self.it:
+            self.sybol.draw(screen , (self.rect.midtop[0] - (self.sybol.image.get_width()/2), self.rect.midtop[1]- 32))
         if self.rect.collideobjects(opponent_rects):
             if self.collided == False:
                 self.collided = True
@@ -108,13 +113,15 @@ def main():
     set_all_players(players)
 
     running = True
+    
+   
+    while running:    
+        clock.tick(60)
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        screen.fill((115,190,211))
 
-        screen.fill("deepskyblue3")
+        screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
+
 
         player1.update()
         player2.update()
@@ -122,8 +129,26 @@ def main():
         for platform in platforms:
             platform.draw()
 
+        for event in pygame.event.get():
+            if event.type == pygame.KEYUP:
+                if event.key==pygame.K_w:
+                    player1.readyJump = True
+                    player1.canJump = False
+                if event.key==pygame.K_UP:
+                    player2.readyJump = True
+                    player2.canJump = False
+            if event.type == pygame.KEYDOWN:
+                if event.key==pygame.K_w and player1.readyJump:
+                    player1.canJump = True
+                    player1.readyJump = False
+                if event.key==pygame.K_UP and player2.readyJump:
+                    player2.canJump = True
+                    player2.readyJump = False
+            if event.type == pygame.QUIT:
+                running = False
+
+
         pygame.display.update()
-        clock.tick(60)
 
     pygame.quit()
 
