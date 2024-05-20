@@ -140,8 +140,6 @@ class Platform:
         self.surf = surf
         self.rect = surf.get_rect()
         self.screen = screen
-
-        self.direction = 1
     
     
     @staticmethod
@@ -178,5 +176,5 @@ class Platform:
     
 
     def update(self):
-        self.rect.move_ip(self.direction, 0)
+        pass
 
