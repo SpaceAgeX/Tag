@@ -18,7 +18,7 @@ player2_surf = pygame.Surface((50, 50))
 player2_surf.fill("indigo")
 
 tileImages = [None]
-for x in range(0, 6):
+for x in range(0, 7):
     tileImages.append(pygame.image.load('Assets/GrassTiles/GrassTile'+str(x+1)+'.png').convert_alpha())
 
 platforms = []
@@ -31,15 +31,15 @@ map_data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,2,3,3,3,3,4,0,0,0,0,0,0,0],
             [0,0,0,0,0,2,4,0,0,0,0,0,0,1,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
-            [0,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]]
+            [5,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [6,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]]
 
 for row, i in enumerate(map_data):
     for tile, j in enumerate(i):
         if j > 0:
-            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)+1))
+            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)-8))
             platforms.append(platform)
 
 
@@ -110,9 +110,28 @@ def main():
     set_all_players(players)
 
     running = True
-
+    
+   
     while running:
         for event in pygame.event.get():
+
+            if event.type == pygame.KEYUP:
+                if event.key==pygame.K_w:
+                    player1.readyJump = True
+                    player1.canJump = False
+                if event.key==pygame.K_UP:
+                    player2.readyJump = True
+                    player2.canJump = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key==pygame.K_w and player1.readyJump:
+                    player1.canJump = True
+                    player1.readyJump = False
+                if event.key==pygame.K_UP and player2.readyJump:
+                    player2.canJump = True
+                    player2.readyJump = False
+
+
             if event.type == pygame.QUIT:
                 running = False
 
@@ -120,7 +139,7 @@ def main():
 
         player1.update()
         player2.update()
-
+        
         for platform in platforms:
             platform.draw()
 

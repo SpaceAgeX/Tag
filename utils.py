@@ -17,10 +17,12 @@ class Player:
         self.direction = 0
         
         # Jumping Variables
-        self.gravity_strength = 0.25
+        self.gravity_strength = 0.5
         self.jumping = False
-        self.jump_power = 10
+        self.jump_power = 16
         self.jump_progress = 0
+        self.canJump = False
+        self.readyJump = True
 
         self.controls = "wasd" # "arrow_keys" or "wasd"
 
@@ -67,10 +69,10 @@ class Player:
     def update(self):
         self.draw()
         keys = pygame.key.get_pressed()
-
         key_left = keys[pygame.K_a] if self.controls == "wasd" else keys[pygame.K_LEFT]
         key_right = keys[pygame.K_d] if self.controls == "wasd" else keys[pygame.K_RIGHT]
-        key_up = keys[pygame.K_w] if self.controls == "wasd" else keys[pygame.K_UP]
+        key_up = self.canJump 
+        
 
         mouse_clicked = pygame.mouse.get_pressed()[0]
     
@@ -132,6 +134,7 @@ class Player:
             self.rect.top = rect.bottom+1
             self.jump_progress = self.jump_power
             self.jumping = True
+        self.canJump = False
         
 
 
