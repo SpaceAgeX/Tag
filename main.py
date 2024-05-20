@@ -11,44 +11,37 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 
+
 player1_surf = pygame.Surface((50, 50))
 player1_surf.fill("indigo")
 player2_surf = pygame.Surface((50, 50))
 player2_surf.fill("indigo")
 
+tileImages = [None]
+for x in range(0, 6):
+    tileImages.append(pygame.image.load('Assets/GrassTiles/GrassTile'+str(x+1)+'.png').convert_alpha())
 
 platforms = []
 
 map_data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,0],
+            [0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,2,3,3,3,3,4,0,0,0,0,0,0,0],
+            [0,0,0,0,0,2,4,0,0,0,0,0,0,1,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+            [0,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
-            [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,1],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0],
-            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
+            [2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]]
 
 for row, i in enumerate(map_data):
     for tile, j in enumerate(i):
-        if j == 1:
-            platform = Platform.from_rect(screen, pygame.Rect(tile*64, (row*32)+1, 64, 32), "darkgreen")
+        if j > 0:
+            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)+1))
             platforms.append(platform)
+
 
 
 def set_all_players(players):
@@ -57,7 +50,7 @@ def set_all_players(players):
     
     chosen_index = random.randrange(0, len(players))
     players[chosen_index].set_it(True)
-    print(chosen_index)
+    #print(chosen_index)
 
 
 class TagPlayer(Player):
@@ -105,11 +98,12 @@ class TagPlayer(Player):
 
 def main():
     player1 = TagPlayer(screen, player1_surf, platforms)
-    player1.rect.topleft = ((WIDTH/2)- 128, HEIGHT/2)
+
+    player1.rect.topleft = ((WIDTH/2)- 128, (HEIGHT/2)-128)
     player1.controls = "wasd"
 
     player2 = TagPlayer(screen, player2_surf, platforms)
-    player2.rect.topleft = ((WIDTH/2 + 128), HEIGHT/2)
+    player2.rect.topleft = ((WIDTH/2 + 128), (HEIGHT/2)-128)
     player2.controls = "arrow_keys"
 
     players = [player1, player2]

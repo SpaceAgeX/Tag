@@ -136,20 +136,16 @@ class Player:
 
 
 class Platform:
-    def __init__(self, screen, surf):
+    def __init__(self, screen, surf, pos):
         self.surf = surf
-        self.rect = surf.get_rect()
+        self.rect = pygame.Rect(pos[0], pos[1], surf.get_width(), surf.get_height()-16)
         self.screen = screen
+        self.pos = (pos[0], pos[1]- 5)
+        self.direction = 1
+    
+
     
     
-    @staticmethod
-    def from_rect(screen, rect: pygame.Rect, color):
-        surf = pygame.Surface((rect.w, rect.h))
-        platform = Platform(screen, surf)
-        platform.surf.fill(color)
-        platform.rect.x = rect.x
-        platform.rect.y = rect.y
-        return platform
 
 
     def get_top(self):
@@ -172,7 +168,7 @@ class Platform:
 
 
     def draw(self):
-        self.screen.blit(self.surf, self.rect)
+        self.screen.blit(self.surf, self.pos)
     
 
     def update(self):
