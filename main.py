@@ -1,5 +1,6 @@
 import pygame
-from utils import Player, Platform, TagSybol
+from player import Player, TagSybol, TagPlayer
+from platform import Platform
 import random
 
 WIDTH = 1280
@@ -16,7 +17,7 @@ player1_surf = pygame.Surface((50, 50))
 player1_surf.fill((162, 62, 140))#pygame.image.load('Assets/sammy.png').convert_alpha()
 
 player2_surf = pygame.Surface((50, 50))
-player2_surf.fill((162, 62, 140))
+player2_surf.fill((165, 48, 48))
 
 TagSybolImage = pygame.image.load('Assets/TagSybol.png').convert_alpha()
 
@@ -57,61 +58,15 @@ def set_all_players(players):
     #print(chosen_index)
 
 
-class TagPlayer(Player):
-    def __init__(self, screen, surf, platforms):
-        super().__init__(screen, surf, platforms)
-        self.opponents = None
-        self.it = False
-        self.id = random.random()
-        self.collided = False
-        self.sybol = TagSybol(TagSybolImage)
 
-
-    def set_it(self, value):
-        if value == True:
-            self.it = True
-            
-        else:
-            self.it = False
-           
-    
-
-    def set_players(self, players):
-        self.opponents = list(filter(lambda p: p.id != self.id, players))
-    
-
-    def update(self):
-        super().update()
-        mouse_clicked = pygame.mouse.get_pressed()[0]
-        opponent_rects = list(map(lambda o: o.rect, self.opponents))
-        if self.it:
-            self.sybol.draw(screen , (self.rect.midtop[0] - (self.sybol.image.get_width()/2), self.rect.midtop[1]- 32))
-        if self.rect.collideobjects(opponent_rects):
-            if self.collided == False:
-                self.collided = True
-
-                if self.it:
-                    self.set_it(False)
-                else:
-                    self.set_it(True)
-        else:
-            self.collided = False
-
-        # Debugging
-        if mouse_clicked:
-            print(f"It ({self.id}): ", self.it)
-        
 
 def main():
-    player1 = TagPlayer(screen, player1_surf, platforms)
+    
+    
+    
 
-    player1.rect.topleft = ((WIDTH/2)- 128, (HEIGHT/2)-128)
-    player1.controls = "wasd"
-
-    player2 = TagPlayer(screen, player2_surf, platforms)
-    player2.rect.topleft = ((WIDTH/2 + 128), (HEIGHT/2)-128)
-    player2.controls = "arrow_keys"
-
+    player1 = TagPlayer((WIDTH/2)- 128, (HEIGHT/2)-128, 50, 50, "wasd", player1_surf, TagSybolImage)
+    player2 = TagPlayer((WIDTH/2)+ 128, (HEIGHT/2)-128, 50, 50, "arrow_keys", player2_surf, TagSybolImage)
     players = [player1, player2]
     set_all_players(players)
 
@@ -126,27 +81,21 @@ def main():
         screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
 
 
-        player1.update()
-        player2.update()
+        player1.update(screen,platforms)
+        player2.update(screen,platforms)
 
         for platform in platforms:
             platform.draw()
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYUP:
-                if event.key==pygame.K_w:
-                    player1.readyJump = True
-                    player1.canJump = False
-                if event.key==pygame.K_UP:
-                    player2.readyJump = True
-                    player2.canJump = False
             if event.type == pygame.KEYDOWN:
-                if event.key==pygame.K_w and player1.readyJump:
-                    player1.canJump = True
-                    player1.readyJump = False
-                if event.key==pygame.K_UP and player2.readyJump:
-                    player2.canJump = True
-                    player2.readyJump = False
+                if event.key == pygame.K_w:
+                    player1.jump()
+                if event.key == pygame.K_UP:
+                    player2.jump()
+
+            
+
             if event.type == pygame.QUIT:
                 running = False
 
