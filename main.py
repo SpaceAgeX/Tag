@@ -130,6 +130,8 @@ def main():
             platform.draw()
 
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
             if event.type == pygame.KEYUP:
                 if event.key==pygame.K_w:
                     player1.readyJump = True
@@ -144,8 +146,7 @@ def main():
                 if event.key==pygame.K_UP and player2.readyJump:
                     player2.canJump = True
                     player2.readyJump = False
-            if event.type == pygame.QUIT:
-                running = False
+
 
 
         pygame.display.update()

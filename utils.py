@@ -84,6 +84,23 @@ class Player:
         
 
         mouse_clicked = pygame.mouse.get_pressed()[0]
+
+        # for event in events:
+        #     if event.type == pygame.KEYUP:
+        #         if (self.controls == "wasd" and event.key == pygame.K_w):
+        #             self.readyJump = True
+        #             self.canJump = False
+        #         if (self.controls == "arrow_keys" and event.key == pygame.K_UP):
+        #             self.readyJump = True
+        #             self.canJump = False
+        #     if event.type == pygame.KEYDOWN:
+        #         if self.readyJump and  (self.controls == "wasd" and event.key == pygame.K_w): 
+        #             self.canJump = True
+        #             self.readyJump = False
+        #         if self.readyJump and  (self.controls == "arrow_keys" and event.key == pygame.K_UP):
+        #             self.canJump = True
+        #             self.readyJump = False
+
     
         if self.jumping:
             self.update_jump()
