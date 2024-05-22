@@ -1,5 +1,6 @@
 import pygame
 from utils import Player, Platform, TagSybol
+from mapbuilder import Map
 import random
 
 WIDTH = 1280
@@ -17,32 +18,6 @@ player2_surf = pygame.Surface((50, 50))
 player2_surf.fill((162, 62, 140))
 
 TagSybolImage = pygame.image.load('Assets/TagSybol.png').convert_alpha()
-
-
-tileImages = [None]
-for x in range(0, 7):
-    tileImages.append(pygame.image.load('Assets/GrassTiles/GrassTile'+str(x+1)+'.png').convert_alpha())
-
-platforms = []
-
-map_data = [[5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5],
-            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
-            [6,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,6],
-            [6,2,4,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,6],
-            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
-            [6,0,0,0,0,0,0,2,3,3,3,3,4,0,0,0,0,0,0,6],
-            [6,0,0,0,0,2,4,0,0,0,0,0,0,1,0,0,0,0,0,6],
-            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6],
-            [6,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
-            [6,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,6],
-            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6],
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7]]
-
-for row, i in enumerate(map_data):
-    for tile, j in enumerate(i):
-        if j > 0:
-            platform = Platform(screen, pygame.transform.scale_by(tileImages[j], 2), (tile*64, (row*64)-8))
-            platforms.append(platform)
 
 
 
@@ -101,6 +76,11 @@ class TagPlayer(Player):
         
 
 def main():
+    current_map = Map.from_json("Assets/maps/default_map.json")
+    current_map.generate_platforms()
+    platforms = current_map.platforms
+
+
     player1 = TagPlayer(screen, player1_surf, platforms)
 
     player1.rect.topleft = ((WIDTH/2)- 128, (HEIGHT/2)-128)
