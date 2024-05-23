@@ -135,7 +135,4 @@ class TagPlayer(Player):
         else:
             self.collided = False
 
-        # Debugging
-        if mouse_clicked:
-            print(f"It ({self.id}): ", self.it)
         
