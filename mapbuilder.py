@@ -1,4 +1,5 @@
-from utils import Platform, ColorPanel, Button
+from utils import ColorPanel, Button
+from platform_class import Platform
 from tkinter.filedialog import asksaveasfilename
 import pygame
 import math

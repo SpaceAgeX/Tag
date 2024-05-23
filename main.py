@@ -1,7 +1,7 @@
 import pygame
-from utils import Player, Platform, TagSybol, TagPlayer
+from player import Player, TagSybol, TagPlayer
+from platform_class import Platform
 from mapbuilder import Map
-from platform import Platform
 import random
 
 WIDTH = 1280
@@ -38,15 +38,6 @@ def main():
     current_map.generate_platforms()
     platforms = current_map.platforms
 
-
-    player1 = TagPlayer(screen, player1_surf, platforms)
-
-    player1.rect.topleft = ((WIDTH/2)- 128, (HEIGHT/2)-128)
-    player1.controls = "wasd"
-
-    player2 = TagPlayer(screen, player2_surf, platforms)
-    player2.rect.topleft = ((WIDTH/2 + 128), (HEIGHT/2)-128)
-    player2.controls = "arrow_keys"
 
     player1 = TagPlayer((WIDTH/2)- 128, (HEIGHT/2)-128, 50, 50, "wasd", player1_surf, TagSybolImage)
     player2 = TagPlayer((WIDTH/2)+ 128, (HEIGHT/2)-128, 50, 50, "arrow_keys", player2_surf, TagSybolImage)
