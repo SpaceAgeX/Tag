@@ -1,6 +1,7 @@
 import pygame
 from player import Player, TagSybol, TagPlayer
 from platform_class import Platform
+from ambiance import Clouds
 from mapbuilder import Map
 import random
 
@@ -20,6 +21,11 @@ player2_surf.fill((165, 48, 48))
 
 TagSybolImage = pygame.image.load('Assets/TagSybol.png').convert_alpha()
 
+
+cloudImages = []
+for x in range(0, 1):
+
+    cloudImages.append(pygame.transform.scale_by(pygame.image.load('Assets/cloud'+str(x+1)+'.png').convert_alpha(), (2, 2)))
 
 
 def set_all_players(players):
@@ -44,6 +50,9 @@ def main():
     players = [player1, player2]
     set_all_players(players)
 
+
+    clouds = Clouds(cloudImages)
+
     running = True
     
    
@@ -52,15 +61,15 @@ def main():
 
         screen.fill((115,190,211))
 
-        screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
-
+        
+        clouds.draw(screen)
 
         player1.update(screen,platforms)
         player2.update(screen,platforms)
 
         for platform in platforms:
             platform.draw()
-
+        screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
