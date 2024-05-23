@@ -26,6 +26,25 @@ map_data = [[5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5],
             [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7]]
 
 
+map_data2 = [
+            [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0],
+            [6,0,0,0,0,0,0,0,0,2,4,0,0,0,0,0,0,0,0,6,0,0,0,0,0],
+            [6,2,4,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,0,6,0,0,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0],
+            [6,0,0,0,0,0,0,2,3,3,3,3,4,0,0,0,0,0,0,6,0,0,0,0,0],
+            [6,0,0,0,0,2,4,0,0,0,0,0,0,1,0,0,0,0,0,6,0,0,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,6,0,0,0,0,0],
+            [6,0,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0],
+            [6,0,0,0,1,0,0,0,2,3,3,4,0,0,0,2,4,0,0,6,0,0,0,0,0],
+            [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0],
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7,0,0,0,0,0],
+            [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0],
+            [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0],
+            [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0],
+            [5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0]]
+
+
 class Map:
     def __init__(self, data: list[list]):
         self.map_data = data
@@ -49,11 +68,15 @@ class Map:
     
     def generate_platforms(self):
         self.platforms = []
+        width = WIDTH/self.dimensions[0]
+        height = HEIGHT/self.dimensions[1]
+        
         
         for row, i in enumerate(self.map_data):
             for tile, j in enumerate(i):
                 if j > 0:
-                    platform = Platform(screen, pygame.transform.scale_by(self.tile_images[j], 2), (tile*WIDTH/self.dimensions[0], row*HEIGHT/self.dimensions[1])) # (tile*64, (row*64)-8))
+                    scaled_tile = pygame.transform.scale_by(self.tile_images[j], (width/31, height/31))
+                    platform = Platform(screen, scaled_tile, (tile*width, row*height)) # (tile*64, (row*64)-8))
                     self.platforms.append(platform)
 
 
@@ -79,10 +102,12 @@ def save_layout(map_data):
     file_content = json.dumps({ "map_data": map_data })
 
     file_path = asksaveasfilename(filetypes=[('JSON Files', '*.json')], defaultextension=[('JSON Files', '*.json')])
-    f = open(file_path, "w")
-    f.write(file_content)
 
-    print(f"Saved To {file_path}")
+    if file_path:
+        f = open(file_path, "w")
+        f.write(file_content)
+
+        print(f"Saved To {file_path}")
 
 
 
@@ -91,7 +116,7 @@ def main():
     running = True
     clock = pygame.time.Clock()
 
-    current_map = Map(map_data)
+    current_map = Map.from_json("Assets/maps/big_map.json") #Map(map_data2)
     current_map.generate_platforms()
     
 
@@ -133,10 +158,13 @@ def main():
             #print("Tile X: ", tile_x)
             #print("Tile Y: ", tile_y)
 
-            new_map_data = current_map.map_data
-            new_map_data[tile_y][tile_x] = selected_tile
-            current_map.update_map_data(new_map_data)
-            
+            try:
+                new_map_data = current_map.map_data
+                new_map_data[tile_y][tile_x] = selected_tile
+                current_map.update_map_data(new_map_data)
+            except IndexError:
+                pass
+
         
         if mouse_clicked[2]:
             panel.rect.x = mouse_pos[0]

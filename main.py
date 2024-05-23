@@ -34,7 +34,7 @@ def set_all_players(players):
 
 
 def main():
-    current_map = Map.from_json("Assets/maps/default_map.json")
+    current_map = Map.from_json("Assets/maps/big_map.json")
     current_map.generate_platforms()
     platforms = current_map.platforms
 
