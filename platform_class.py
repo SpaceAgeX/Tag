@@ -2,8 +2,6 @@ import pygame
 import math
 
 
-
-
 class Platform:
     def __init__(self, screen, surf, pos):
         self.surf = surf
@@ -11,10 +9,6 @@ class Platform:
         self.screen = screen
         self.pos = (pos[0], pos[1]- 5)
         self.direction = 1
-    
-
-    
-    
 
 
     def get_top(self):
