@@ -1,6 +1,5 @@
 import pygame
-from player import Player, TagSybol, TagPlayer
-from platform_class import Platform
+from player import TagPlayer
 from mapbuilder import Map
 import random
 
