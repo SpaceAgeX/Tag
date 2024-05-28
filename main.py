@@ -70,10 +70,15 @@ def main():
         # Checks For Double-It Glitch
         it_exists = False
         for player in players:
+            if it_exists and player.it == True:
+                player.set_it(False)
             if player.it == True:
                 it_exists = True
-            if it_exists and player.it == True:
-                player.it = False
+
+        
+        if it_exists == False:
+            players[random.randrange(0, len(players))].set_it(True)
+            it_exists = True
 
 
         for platform in platforms:
