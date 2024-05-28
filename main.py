@@ -66,6 +66,16 @@ def main():
         player1.update(screen,platforms)
         player2.update(screen,platforms)
 
+
+        # Checks For Double-It Glitch
+        it_exists = False
+        for player in players:
+            if player.it == True:
+                it_exists = True
+            if it_exists and player.it == True:
+                player.it = False
+
+
         for platform in platforms:
             platform.draw()
         screen.blit((pygame.font.SysFont('arial', 30).render(str(int(clock.get_fps())), 1, pygame.Color((255,255,255)))), (0, 0))
