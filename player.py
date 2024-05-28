@@ -115,24 +115,28 @@ class TagPlayer(Player):
     
 
     def set_players(self, players):
-        self.opponents = list(filter(lambda p: p.id != self.id, players))
+        self.opponents = []
+        for x in players:
+            if x != self:
+                self.opponents.append(x)
+        
     
 
     def update(self, screen, platforms):
         super().update(screen, platforms)
         mouse_clicked = pygame.mouse.get_pressed()[0]
-        opponent_rects = list(map(lambda o: o.rect, self.opponents))
         if self.it:
             self.sybol.draw(screen , (self.rect.midtop[0] - (self.sybol.image.get_width()/2), self.rect.midtop[1]- 32))
-        if self.rect.collideobjects(opponent_rects):
-            if self.collided == False:
-                self.collided = True
+        for x in self.opponents:
+            if pygame.sprite.collide_rect(self, x):
+                if self.collided == False:
+                    self.collided = True
 
-                if self.it:
-                    self.set_it(False)
-                else:
-                    self.set_it(True)
-        else:
-            self.collided = False
+                    if self.it:
+                        self.set_it(False)
+                    else:
+                        self.set_it(True)
+            else:
+                self.collided = False
 
         
