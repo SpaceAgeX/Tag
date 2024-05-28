@@ -1,6 +1,5 @@
 import pygame
-from player import Player, TagSybol, TagPlayer
-from platform_class import Platform
+from player import TagPlayer
 from ambiance import Clouds
 from mapbuilder import Map
 import random
@@ -66,6 +65,16 @@ def main():
 
         player1.update(screen,platforms)
         player2.update(screen,platforms)
+
+
+        # Checks For Double-It Glitch
+        it_exists = False
+        for player in players:
+            if player.it == True:
+                it_exists = True
+            if it_exists and player.it == True:
+                player.it = False
+
 
         for platform in platforms:
             platform.draw()
